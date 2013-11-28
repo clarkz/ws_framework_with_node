@@ -35,7 +35,7 @@
     		hpcnt += '<li>';
     		hpcnt += '<h3 class="service-title">' + def['name'] + '</h3>';
     		if(def['description']){
-    			hpcnt += '<div class="service-desc">' + def['description'] + '</div>';
+    			hpcnt += '<div class="service-note">' + def['description'] + '</div>';
     		}
    			hpcnt += '<table class="service-desc">';
    			hpcnt += '<tr><td><span class="service-item">end point</span></td>';
