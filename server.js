@@ -73,6 +73,21 @@
    			var queryUrl = rtk + (sampleQuery?'?' + sampleQuery : '');
    			hpcnt += '<td><a href="' + queryUrl + '">' + queryUrl + '</a></td>';
    			hpcnt += '</tr>';
+   			
+   			if(def['examples']){
+   	   			hpcnt += '<tr><td><span class="service-item service-more-examples-title">more examples</span></td>';
+   				hpcnt += '<td class="service-more-examples"><ul>';
+   				for(var exp in def['examples']){
+   					hpcnt += '<li>';
+   		   			queryUrl = rtk + (def['examples'][exp]['queryParams']?'?' + def['examples'][exp]['queryParams'] : '');
+   		   			if(def['examples'][exp]['description']){
+   	   					hpcnt += '<p>' + def['examples'][exp]['description'] + '</p>'; 
+   		   			}
+   		   			hpcnt += '<a href="' + queryUrl + '">' + queryUrl + '</a>';
+   					hpcnt += '</li>';
+   				}
+   				hpcnt += '</ul></td></tr>';
+   			}
    			hpcnt += '</table>';
     		hpcnt += '</li>';
     	}

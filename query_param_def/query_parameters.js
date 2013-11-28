@@ -6,7 +6,21 @@ var paramap = {
 	    	"area": {"description": "the state that the search area belongs to", "required": true, "example": "90212"}
 		},
 		"name": "Avm history",
-		"description": "Get Avm historial data in a given area, area can be state, county, city or zip code"
+		"description": "Get Avm historial data in a given area, area can be state, county, city or zip code",
+		"examples": [
+		             	{
+		             		"queryParams": "level=state&state=tx",
+		             		"description": "avm in a state"
+		             	},
+		             	{
+		             		"queryParams": "level=county&state=ca&area=orange",
+		             		"description": "query avm history in a county"
+		             	},
+		             	{
+		             		"queryParams": "level=city&state=wa&area=seattle",
+		             		"description": "avm history for a city"
+		             	},
+		             ]
     },
     'hello': {
     	"name": "Say hi",
