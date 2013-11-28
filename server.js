@@ -10,7 +10,8 @@
 
     var utils = require("./utils/utils");
     var avm = require("./data_sources/avm_history");
-    
+//    var paramdef = require("./param_def/qp");
+    var paramDef = require("./query_param_def/query_parameters");;
     //
     // create some logic to be routed to.
     //
@@ -25,8 +26,55 @@
     	for(var rtk in router.routes){
     		if(rtk.toLowerCase() == 'get') continue;
     		
-    		var rv = router.routes[rtk];
-    		hpcnt += '<li><a href="' + rtk + '">' + rtk + '</a></li>';
+//    		console.log('end point: ' + rtk + '\r\n');
+    		var def = paramDef.getQueryParamDefByPath(rtk);
+    		if(!def) continue;
+
+    		var sampleQuery = '';
+
+    		hpcnt += '<li>';
+    		hpcnt += '<h3 class="service-title">' + def['name'] + '</h3>';
+    		if(def['description']){
+    			hpcnt += '<div class="service-desc">' + def['description'] + '</div>';
+    		}
+   			hpcnt += '<table class="service-desc">';
+   			hpcnt += '<tr><td><span class="service-item">end point</span></td>';
+   			hpcnt += '<td><span class="service-item-value">/' + rtk + '</span></td>';
+   			hpcnt += '</tr>';
+   			if(def['parameters']){
+   	   			hpcnt += '<tr><td><span class="service-item">query parameters</span></td>';
+   	   			hpcnt += '<td>';
+   	   			hpcnt += '<table class="service-param-desc">';
+   	   			hpcnt += '<tr class="param-table-header"><th class="param-name">name</th><th class="param-value">value</th><th class="param-desc">description</th></tr>';
+   	   			for(var info in def['parameters']){
+   	   				var paramdef = def['parameters'][info];
+   	   	   			hpcnt += '<tr>';
+   	   				hpcnt += '<td class="param-name">' + info + '</td>';
+   	   				var parvaltag = '<td></td>';
+   	   				if(paramdef['values']){
+   	   					parvaltag = '<td class="param-value">' + paramdef['values'] + '</td>';
+   	   				}
+   	   				hpcnt += parvaltag;
+   	   				var pardesctag = '<td></td>';
+   	   				if(paramdef['description']){
+   	   					pardesctag = '<td class="param-desc">' + paramdef['description'] + '</td>';
+   	   				}
+   	   				hpcnt += pardesctag;
+   	   	   			hpcnt += '</tr>';
+
+   	   	   			if(paramdef['example']){
+   	   					sampleQuery += (sampleQuery? '&' : '') + info + '=' + paramdef['example'];
+   	   				}
+   	   			}
+   	   			hpcnt += '</table>';
+   	   			hpcnt += '</td>';
+   			}
+   			hpcnt += '<tr><td><span class="service-item">query example</span></td>';
+   			var queryUrl = rtk + (sampleQuery?'?' + sampleQuery : '');
+   			hpcnt += '<td><a href="' + queryUrl + '">' + queryUrl + '</a></td>';
+   			hpcnt += '</tr>';
+   			hpcnt += '</table>';
+    		hpcnt += '</li>';
     	}
     	hpcnt += '</ul>';
     	return hpcnt;
@@ -134,6 +182,6 @@
     //
     // set the server to listen on port `8080`.
     //
-	console.log('web server is listening on port ' + serverport);
+	console.log('web server is listening on port ' + serverport + "\r\npress [Ctrl]+C to stop.");
     server.listen(serverport);
 
