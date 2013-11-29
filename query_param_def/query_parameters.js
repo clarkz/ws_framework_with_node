@@ -30,7 +30,7 @@ var paramap = {
 	    	"client_id": {"description": "identify of the caller.", "required": true, "example": "mapi_demo"}
 		},
 		"post": {
-			"example": '{"user_name": "jack", "password": "zhang"}',
+			"example": '{"user_name": "guest", "password": "098765"}',
 			"description": "use post to send the user id and password."
 		}
     },
