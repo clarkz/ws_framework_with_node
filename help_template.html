@@ -3,6 +3,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>Api Help</title>
+        <script type="text/javascript" src="client_resources/jquery.js"></script>
 		<style type="text/css">
 			body {
 				font-family: sans-serif;
@@ -35,6 +36,9 @@
             empty-cells: show;
             border: 1px solid #C0C0C0;
         }
+        .cls-query-example textarea, .cls-query-example pre{
+            display: block;
+        }
         td.service-more-examples{
             margin: 10px;
         }
@@ -66,7 +70,35 @@
 	</head>
 
 	<body>
-		<h1>API help</h1>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('.cls-lnk-post').click(function(){
+                    var lnk = $(this);
+                    var iptcp = lnk.siblings('textarea');
+                    var optcp = lnk.siblings('pre');
+                    var postbody = iptcp.val();
+                    var url = lnk.attr("href");
+                    $.ajax({
+                        url : url,
+                        type: "POST",
+                        data : postbody,
+//                        dataType: "text",
+                        success: function(data, textStatus, jqXHR){
+                                    var smsg = JSON.stringify(data, null, 2);
+                                    optcp.html(smsg);
+                                    //data - response from server
+                                },
+                        error: function (jqXHR, textStatus, errorThrown){
+                                    var msg = textStatus;
+                                    optcp.html(msg);
+                                }
+                    });
+                    return false;
+                });
+            })
+        </script>
+		
+        <h1>API help</h1>
 		$doc_content$
 	</body>
 </html>

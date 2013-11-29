@@ -10,6 +10,8 @@
 
     var utils = require("./utils/utils");
     var avm = require("./data_sources/avm_history");
+    var account = require("./data_sources/account");
+    
 //    var paramdef = require("./param_def/qp");
     var paramDef = require("./query_param_def/query_parameters");;
     //
@@ -69,9 +71,22 @@
    	   			hpcnt += '</table>';
    	   			hpcnt += '</td>';
    			}
-   			hpcnt += '<tr><td><span class="service-item">query example</span></td>';
+   			var postbody = (def['post'] && def['post']['example']? def['post']['example']: '');
+   			hpcnt += '<tr><td><span class="service-item">query example' + (postbody?' (post)' : '') + '</span></td>';
    			var queryUrl = rtk + (sampleQuery?'?' + sampleQuery : '');
-   			hpcnt += '<td><a href="' + queryUrl + '">' + queryUrl + '</a></td>';
+   			var html4post = '';
+   			var postcls = '';
+   			if(postbody){
+   				html4post += '<textarea rows="5" cols="40">';
+   				html4post += postbody;
+   				html4post += '</textarea>';
+   				html4post += '<pre></pre>';
+   				postcls = 'class="cls-lnk-post" ';
+   			}
+   			hpcnt += '<td><div class="cls-query-example">\
+   						<a ' + postcls + 'href="' + queryUrl + '">' + queryUrl + '</a>\
+   						' + html4post + '\
+   						</div></td>';
    			hpcnt += '</tr>';
    			
    			if(def['examples']){
@@ -125,6 +140,16 @@
         '/hello': {
             get: helloWorld
         },
+        '/account': {
+        	post: function(){
+            	var request = this.req;
+            	var response = this.res;
+               	account.authenticate(request, response, function(err, hash, userId){
+               		response.writeHead(200, { 'Content-Type': 'text/plain' });
+               		response.end('authentication token for ' + userId + ' is: ' + hash);
+               	});
+        	}
+        },
         '/avm': {
             get: function(){
             	var request = this.req;
@@ -149,6 +174,20 @@
     //
 	var server = http.createServer(function (req, res) {
 
+		if(req.method == 'POST'){
+			var postContent = '';
+			req.on('data', function(data){
+				postContent += data;
+				if(postContent.length > 2048){
+					postContent = '';
+					this.rep.wirteHead(413, {'Content-Type': 'text/plain'}).end();
+					this.rep.connection.destroy();
+				}
+			});
+			req.on('end', function(data){
+				req.postContent = postContent;
+			});
+		}
 	    // server static files
 	    // http://stackoverflow.com/questions/6084360/node-js-as-a-simple-web-server
 		var uri = url.parse(req.url).pathname, filename = path.join(process.cwd(), uri);
